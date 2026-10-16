@@ -1,0 +1,476 @@
+{
+  "name": "support-ticket-router",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8cf3ec17-37c2-4ea5-abae-b5bcd18d1ce2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      ticket_id: \"T-101\",\n      has_priority: true,\n      priority: \"High\"\n    }\n  },\n  {\n    json: {\n      ticket_id: \"T-102\",\n      has_priority: true,\n      priority: \"Medium\"\n    }\n  },\n  {\n    json: {\n      ticket_id: \"T-103\",\n      has_priority: true,\n      priority: \"Low\"\n    }\n  },\n  {\n    json: {\n      ticket_id: \"T-104\",\n      has_priority: false,\n      priority: null\n    }\n  },\n  {\n    json: {\n      ticket_id: \"T-105\",\n      has_priority: true,\n      priority: \"Critical\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "7f75e09d-8876-4c56-bc90-e9443275b4f6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d5b4409d-c078-472e-b36d-10c55d11eb05",
+              "leftValue": "={{ $json.has_priority }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        0
+      ],
+      "id": "5936988c-7034-40ca-88a2-9603fb5b352d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "High",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5e3462fe-7e88-4bee-8ea0-6fc4c40ce6e6"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8b2559fe-0108-4810-b21d-0ebdbcedad93",
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "Medium",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a3aa3148-7168-4a03-b070-55cecaeebd6a",
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "Low",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        -176
+      ],
+      "id": "b4cfbe08-fc3a-4c14-9cf4-922d1a241ca5",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eda12ec5-50bc-457b-b086-f8756f33d28a",
+              "name": "ticket_id",
+              "value": "={{ $json.ticket_id }}",
+              "type": "string"
+            },
+            {
+              "id": "008ac784-cfe6-4a09-abf1-e8a3f0b09e93",
+              "name": "queue_name",
+              "value": "Incomplete Tickets Queue",
+              "type": "string"
+            },
+            {
+              "id": "7c2c948c-c4b4-4888-a3b2-e170f109a79f",
+              "name": "status",
+              "value": "Exception - Missing Priority",
+              "type": "string"
+            },
+            {
+              "id": "7f6d8d0b-925a-4ccf-92a9-8eef2d6fee6f",
+              "name": "action_required",
+              "value": "Request priority from user",
+              "type": "string"
+            },
+            {
+              "id": "9de9114b-9c7a-4364-a3de-6e05621d47f0",
+              "name": "is_exception",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "2919c7c7-d332-4cf7-b1f4-e029e137925c",
+              "name": "processed_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        704,
+        128
+      ],
+      "id": "797ae653-5f22-48ff-8c3d-18dc0bb33a70",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cd55b7b2-acf3-4746-a2f0-d42013dc0332",
+              "name": "ticket_id",
+              "value": "={{ $json.ticket_id }}",
+              "type": "string"
+            },
+            {
+              "id": "82add06c-ec97-49bc-87cf-dcf8b82ae273",
+              "name": "queue_name",
+              "value": "Fast Queue",
+              "type": "string"
+            },
+            {
+              "id": "ad8db8e9-fb79-40f1-bc04-4db15e8ccd5f",
+              "name": "status",
+              "value": "Urgent - Manager Notified",
+              "type": "string"
+            },
+            {
+              "id": "e574f764-7024-4555-b836-e94fd45a861a",
+              "name": "notify_manager",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "746193f8-4ee6-41db-9895-0d5a14d5dde9",
+              "name": "processed_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        944,
+        -400
+      ],
+      "id": "4d01da9a-20d2-4a8e-b2f5-43ff9d523ee7",
+      "name": "High"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cb5ad2f8-3df0-489b-9990-f0c0b04703f6",
+              "name": "ticket_id",
+              "value": "={{ $json.ticket_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c53e646e-a1b2-481e-b80e-37fd614482ed",
+              "name": "queue_name",
+              "value": "Normal Queue",
+              "type": "string"
+            },
+            {
+              "id": "576033c6-6c6d-4153-9cc0-9c49b22ccd7f",
+              "name": "status",
+              "value": "Pending Assignment",
+              "type": "string"
+            },
+            {
+              "id": "3add5927-1b2c-4919-a5d9-fd99bfeda098",
+              "name": "notify_manager",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "fed082e6-1d79-4681-8157-a9a2a7bdf4b4",
+              "name": "processed_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        944,
+        -224
+      ],
+      "id": "14d4ae1a-8059-46cc-9764-aff9ccb320f7",
+      "name": "Medium"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9bee4a0-abfc-4acd-815d-7a2a309f549e",
+              "name": "ticket_id",
+              "value": "={{ $json.ticket_id }}",
+              "type": "string"
+            },
+            {
+              "id": "9e303f99-588e-42bd-9d85-b3f8a07bf98e",
+              "name": "queue_name",
+              "value": "Backlog Queue",
+              "type": "string"
+            },
+            {
+              "id": "8f158de9-09d5-4dda-8908-b5dafcb13087",
+              "name": "status",
+              "value": "Deferred",
+              "type": "string"
+            },
+            {
+              "id": "00bc2805-9a37-41fc-a9c6-a7bb1a8044f8",
+              "name": "notify_manager",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "2a6ad0e9-cf8d-4aa3-ba47-93ca854ae7e6",
+              "name": "processed_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        944,
+        -64
+      ],
+      "id": "c943c4d3-4893-40ce-a695-92f21a02f5b0",
+      "name": "Low"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c9ae1fa-45cc-41a5-abeb-cdf144faeb82",
+              "name": "ticket_id",
+              "value": "={{ $json.ticket_id }}",
+              "type": "string"
+            },
+            {
+              "id": "00906ec4-effd-4e93-8b3c-32fd455ce22a",
+              "name": "queue_name",
+              "value": "Manual Audit Queue",
+              "type": "string"
+            },
+            {
+              "id": "ce5ebe52-b9fa-4cde-9144-76f5f56db5ae",
+              "name": "status",
+              "value": "Exception - Unknown Priority",
+              "type": "string"
+            },
+            {
+              "id": "de071bab-bb2d-4b41-af58-d9b4b92f0748",
+              "name": "action_required",
+              "value": "Review priority value manually",
+              "type": "string"
+            },
+            {
+              "id": "0e93c343-51c8-4390-b1a6-3258c1388b61",
+              "name": "is_exception",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        944,
+        96
+      ],
+      "id": "7b057cdc-6311-4e10-9438-913d91674af5",
+      "name": "Exception: Unknown Priority"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "High",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Medium",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Low",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Exception: Unknown Priority",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "21a35d21-524f-4574-afd5-e9bfd1cdac5e",
+  "meta": {
+    "instanceId": "c8c075491b060f05e849ac6c592088dce67f607008aacbcde34097e83851498b"
+  },
+  "nodeGroups": [],
+  "id": "pJLqYoxYlbxf1Z9d",
+  "tags": []
+}
